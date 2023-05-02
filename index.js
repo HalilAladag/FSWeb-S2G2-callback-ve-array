@@ -7,15 +7,16 @@ const { fifaData } = require('./fifa.js')
 	💡 İPUCU: Öncelikle datayı filtrelemek isteyebilirsiniz */
 
 //(a) 2014 Dünya kupası Finali Evsahibi takım ismi (dizide "Home Team Name" anahtarı)
-
+const finalMatches = fifaData.filter(match => match.Year === 2014 && match.Stage === "Final");
+//console.log(finalMatches[0]["Home Team Name"]);
 //(b) 2014 Dünya kupası Finali Deplasman takım ismi  (dizide "Away Team Name" anahtarı)
-
+//console.log(finalMatches[0]["Away Team Name"]);
 //(c) 2014 Dünya kupası finali Ev sahibi takım golleri (dizide "Home Team Goals" anahtarı)
-
+//console.log(finalMatches[0]["Home Team Goals"]);
 //(d)2014 Dünya kupası finali Deplasman takım golleri  (dizide "Away Team Goals" anahtarı)
-
+//console.log(finalMatches[0]["Away Team Goals"]);
 //(e) 2014 Dünya kupası finali kazananı*/
-
+//console.log(finalMatches[0]["Win conditions"]);
 
 /*  Görev 2: 
 	Finaller adlı fonksiyonu kullanarak aşağıdakileri uygulayın:
@@ -25,12 +26,12 @@ const { fifaData } = require('./fifa.js')
 	💡 İPUCU - verilen data içindeki nesnelerin(objects) "Stage" anahtarına bakmalısınız
 */
 
-function Finaller(/* kodlar buraya */) {
-	
-    /* kodlar buraya */
+function Finaller(fifaData) {
+	const justFinals = fifaData.filter(matchF => matchF.Stage === "Final")
+return justFinals
 }
-
-
+const finalMatches1 = Finaller(fifaData);
+//console.log(finalMatches1);
 
 /*  Görev 3: 
 	Bir higher-order fonksiyonu olan Yillar isimli fonksiyona aşağıdakileri uygulayın: 
@@ -39,11 +40,14 @@ function Finaller(/* kodlar buraya */) {
 	3. Finaller data setindeki tüm yılları içeren "years" adındaki diziyi(array) döndürecek
 	*/
 
-function Yillar(/* kodlar buraya */) {
-	
-    /* kodlar buraya */
+function Yillar(fifaData, Finaller) {
+	const justFinals = Finaller(fifaData);
+    const justYears = justFinals.map(match => match.Year);
+return justYears;
 }
 
+const justYears1 = Yillar(fifaData, Finaller);
+//console.log(justYears1);
 
 /*  Görev 4: 
 	Bir higher-order fonksiyonunu olan Kazananlar isimli fonksiyona aşağıdakileri uygulayın:  
@@ -53,12 +57,17 @@ function Yillar(/* kodlar buraya */) {
 	💡 İPUCU: Beraberlikler(ties) için şimdilik endişelenmeyin (Detaylı bilgi için README dosyasına bakabilirsiniz.)
 	4. Tüm kazanan ülkelerin isimlerini içeren `kazananlar` adında bir dizi(array) döndürecek(return)  */ 
 
-function Kazananlar(/* kodlar buraya */) {
-	
-    /* kodlar buraya */
-	
+function Kazananlar(fifaData, Finaller) {
+	const winners = Finaller(fifaData).map(match1 => {
+		if ( match1["Home Team Goals"]> match1["Away Team Goals"]){
+			return match1 ["Home Team Name"];
+		}else{
+			return match1 ["Away Team Name"]}
+	});
+	return winners
 }
-
+const winnersArr = Kazananlar(fifaData, Finaller);
+//console.log(winnersArr);
 
 
 /*  Görev 5: 
@@ -72,12 +81,20 @@ function Kazananlar(/* kodlar buraya */) {
 	💡 İPUCU: her cümlenin adım 4'te belirtilen cümleyle birebir aynı olması gerekmektedir.
 */
 
-function YillaraGoreKazananlar(/* kodlar buraya */) {
-	
-/* kodlar buraya */
-
-}
-
+function YillaraGoreKazananlar(fifaData, Finaller, Yillar, Kazananlar) {
+	let result = [];
+	let yillar = Yillar(fifaData, Finaller);
+	let kazananlar = Kazananlar(fifaData, Finaller);
+  
+	for (let i = 0; i < yillar.length; i++) {
+	  const text = `${yillar[i]} yılında, ${kazananlar[i]} dünya kupasını kazandı!`;
+	  result.push(text);
+	}
+  
+	return result;
+  }
+  
+  //console.log(YillaraGoreKazananlar(fifaData, Finaller, Yillar, Kazananlar));
 
 /*  Görev 6: 
 	Bir higher order fonksiyonu olan `OrtalamaGolSayisi` isimli fonksiyona aşağıdakileri uygulayın: 
@@ -93,11 +110,19 @@ function YillaraGoreKazananlar(/* kodlar buraya */) {
 	
 */
 
-function OrtalamaGolSayisi(/* kodlar buraya */) {
+function OrtalamaGolSayisi(Finaller) {
+	const toplamGoller = Finaller.reduce((acc, match) => {
+		return acc + match["Home Team Goals"] + match["Away Team Goals"];
+	  }, 0);
+	  
+	  const ortalamaGol = (toplamGoller / Finaller.length).toFixed(2);
+	  
+	  return ortalamaGol;
+	}
 	
-    /* kodlar buraya */
-	
-}
+	const finaller = Finaller(fifaData);
+	const ortalamaGolSayisi = OrtalamaGolSayisi(finaller);
+//console.log(ortalamaGolSayisi);
 
 
 
